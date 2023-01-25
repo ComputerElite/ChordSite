@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Piano Chord Finder</title>
+  <link rel="stylesheet" type="text/css" href="style.css">
+</head>
+<body>
+  <div class="piano">
+    <div class="white-key key" data-note="C"></div>
+    <div class="black-key key" data-note="C#"></div>
+    <div class="white-key key" data-note="D"></div>
+    <div class="black-key key" data-note="D#"></div>
+    <div class="white-key key" data-note="E"></div>
+    <div class="white-key key" data-note="F"></div>
+    <div class="black-key key" data-note="F#"></div>
+    <div class="white-key key" data-note="G"></div>
+    <div class="black-key key" data-note="G#"></div>
+    <div class="white-key key" data-note="A"></div>
+    <div class="black-key key" data-note="A#"></div>
+    <div class="white-key key" data-note="B"></div>
+</div>
+  <script>
+    var pianoKeys = document.querySelectorAll(".piano .white-key, .piano .black-key");
+    var notes = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"];
+    var rootNotes = ["C", "D", "E", "F", "G", "A", "B"];
+    var chordData = {};
+
+    // Create a chordData object with all possible chords
+    rootNotes.forEach(n => {
+        var i = notes.indexOf(n);
+        
+        AddChords(n, i, n)
+        AddChords(n + "#", (i + 1) % 12, n)
+        AddChords(n + "b", (i - 1) % 12, n)
+    })
+
+    function AddChords(n, i, first) {
+        chordData[n + "5"] = { keys: [first, notes[(i + 7) % 12]] }; // C5
+        chordData[n] = { keys: [first, notes[(i + 4) % 12], notes[(i + 7) % 12]] }; // C
+        chordData[n + "m"] = { keys: [first, notes[(i + 3) % 12], notes[(i + 7) % 12]] }; // Cm
+
+        chordData[n + "7"] = { keys: [first, notes[(i + 4) % 12], notes[(i + 7) % 12], notes[(i + 10) % 12]] }; // C7
+        chordData[n + "m7"] = { keys: [first, notes[(i + 3) % 12], notes[(i + 7) % 12], notes[(i + 10) % 12]]}; // Cm7
+        chordData[n + "maj7"] = { keys: [first, notes[(i + 4) % 12], notes[(i + 7) % 12], notes[(i + 11) % 12]] }; // Cmaj7
+    }
+
+    var params = new URLSearchParams(window.location.search);
+    findChord();
+
+    function findChord() {
+        var chord = params.get("chord");
+        var chordInfo = chordData[chord];
+        if(!chordInfo) return;
+        pianoKeys.forEach(function(key) {
+            key.classList.remove("highlight");
+        });
+        chordInfo.keys.forEach(function(note) {
+            var key = document.querySelector(".piano .key[data-note='" + note + "']");
+            key.classList.add("highlight");
+        });
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,169 @@
+@import url('https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap');
+
+textarea {
+    padding: 10px;
+    width: 50vw;
+    height: 100vh;
+    border: none;
+    background-color: #111111;
+    color: #EEEEEE;
+    font-size: 16px;
+    padding: 10px;
+}
+
+.flex {
+    display: flex;
+    flex-direction: row;
+}
+
+input[type="text"] {
+    padding: 10px;
+    border: none;
+    background-color: #111111;
+    color: #EEEEEE;
+    font-size: 16px;
+    padding: 10px;
+    margin-left: 20px;
+}
+
+button {
+    padding: 10px;
+    border: none;
+    background-color: var(--accent);
+    color: #EEEEEE;
+    font-size: 16px;
+    padding: 10px;
+    margin-left: 20px;
+}
+
+.section {
+    font-size: 1.1rem;
+}
+
+.sectionButton {
+    border-radius: 20px;
+    height: 40px;
+    margin-right: 5px;
+    background-color: var(--accent);
+    transition-duration: .5s;
+}
+
+.overflowScroll {
+    overflow-y: scroll;
+    height: 80vh;
+}
+
+.sectionButton:hover {
+    background-color: var(--accentLight);
+}
+
+.sectionButtonContainer {
+    position: fixed;
+    bottom: 20px;
+}
+
+.resultChords {
+    padding: 20px;
+    font-size: 2rem;
+}
+
+.result {
+    padding: 10px;
+    width: 100%;
+    border: none;
+    background-color: #151515;
+    color: #EEEEEE;
+    font-size: 16px;
+    padding: 10px;
+    border-radius: 10px;
+    margin-bottom: 10px;
+}
+
+.flexInline {
+    justify-content:start;
+    display: flex;
+    flex-direction: row;
+}
+
+.paddingLeft {
+    padding-left: 20px;
+}
+
+body {
+    font-family: "Roboto";
+    background-color: #111111;
+    color: #EEEEEE;
+    margin: 0;
+    padding: 15px;
+}
+.chord {
+    position: absolute;
+    transform: translateY(-20px);
+    font-weight: bold;
+}
+
+.chords {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.songName {
+    margin-bottom: 0px;
+}
+
+.artist {
+    font-style: italic;
+    color: #555555;
+    margin-top: 0px;
+    margin-left: 20px;
+}
+
+.song {
+    position: relative;
+    padding-top: 40px;
+    line-height: 4;
+    flex-shrink: 0;
+    font-family: Consolas;
+}
+
+:root {
+    --white: #FFFFFF;
+    --black: #000000;
+    --accent: #28142b;
+    --accentLight: #422047;
+}
+
+.leftRightSplit {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+.white-key {
+    width: 30px;
+    height: 120px;
+    background-color: var(--black);
+    border: 1px solid var(--white);
+    display: inline-block;
+}
+.black-key {
+    width: 20px;
+    height: 80px;
+    background-color: var(--white);
+    position: absolute;
+    transform: translateX(-12.5px);
+    display: inline-block;
+    border: 1px solid var(--white);
+}
+
+.highlight {
+    background-color: #542a5b;
+}
+
+.piano {
+      position: relative;
+}
+
+iframe {
+    border: none;
+    overflow-y: hidden;
+}

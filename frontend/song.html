@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Piano Chord Finder</title>
+  <link rel="stylesheet" type="text/css" href="style.css">
+</head>
+<body>
+    <button style="display: none;" id="edit" onclick="Edit()">Edit</button>
+    <h1 class="songName" id="name">Loading...</h1>
+    <h2 class="artist" id="artist">Loading...</h2>
+    <div class="leftRightSplit">
+        <div class="song" id="song">
+            Loading...
+        </div>
+        <div class="chords" id="chords">
+            Loading...
+        </div>
+    </div>
+    <div class="sectionButtonContainer" id="sectionButtons">
+
+    </div>
+    <script src="script.js"></script>
+  <script>
+    var song = {
+        "name": "Sad Chords",
+        "artist": "Saddest",
+        "text": "Do a [F#]F# chord for me darling, you know I [B]love you so.\nAll dreams are made of [Em]sad chords. Just like your [Bm]sad life.\nBut I have money and am [F#]happy",
+    }
+    const songContainer = document.getElementById("song")
+    const chordsContainer = document.getElementById("chords")
+    const name = document.getElementById("name")
+    const artist = document.getElementById("artist")
+    const editButton = document.getElementById("edit")
+    const sectionButtonContainer = document.getElementById("sectionButtons")
+    const chordRegex = /\[([^\]]+)\]/g;
+    const sectionRegex = /\{[^\}]+\}/g
+
+    
+    var params = new URLSearchParams(window.location.search);
+
+    if(params.get("id")) {
+        fetchSong(params.get("id"))
+    }
+    else if(params.get("text")) {
+        song.text = params.get("text")
+        transcribeChords();
+    }
+    else {
+        transcribeChords()
+    }
+
+    function fetchSong(id) {
+        jfetch("/api/v1/song/"+id).then(res =>  {
+            song = res;
+            transcribeChords();
+        })
+    }
+
+    function Edit() {
+        window.location.href = "edit?id="+song.songId
+    }
+
+    function transcribeChords() {
+      var chords = song.text.match(chordRegex);
+      var sections = song.text.match(sectionRegex);
+      
+      var text = song.text;
+      var sectionsHTML = ""
+
+      name.innerHTML = song.name
+      artist.innerHTML = "by " + song.artist
+      editButton.style.display = song.isOwn ? "block" : "none"
+
+      text = text.replace(/ /g, "&nbsp;")
+      chords.forEach(function(chord) {
+        var chordName = chord.substring(1, chord.length - 1)
+        text = text.replace(chord, `<span class='chord'>${chordName}</span>`);
+      });
+      sections.forEach(section => {
+        var sectionName = section.substring(1, section.length - 1)
+        text = text.replace(section, `<span class='section' id="${sectionName}">${sectionName}</span>`)
+        sectionsHTML += `<button onclick="scrollToSection('${sectionName}')" class="sectionButton">${sectionName}</button>`
+      })
+      text = text.replace(/\n/g, "<br>")
+      songContainer.innerHTML = text;
+      sectionButtonContainer.innerHTML = sectionsHTML
+      displayChords()
+    }
+
+    function scrollToSection(sectionId) {
+        var section = document.getElementById(sectionId)
+        section.scrollIntoView()
+    }
+
+    function onlyUnique(value, index, self) {
+        return self.indexOf(value) === index;
+    }
+
+    function displayChords() {
+        var chords = song.text.match(chordRegex);
+        var unique = chords.filter(onlyUnique);
+        var text = ""
+        unique.forEach(x => {
+            x = x.replace("[", "").replace("]", "")
+            text += `<div><h2>${x}</h2><iframe src="chord?chord=${escape(x)}"></iframe></div>`
+        })
+        chordsContainer.innerHTML = text
+    }
+  </script>
+</body>
+</html>

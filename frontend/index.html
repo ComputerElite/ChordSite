@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Piano Chord Finder</title>
+  <link rel="stylesheet" type="text/css" href="style.css">
+</head>
+
+<body>
+    <h1>Piano chord finder</h1>
+    <h4>Find chords for songs</h4>
+    <br>
+    <br>
+    <div class="flex">
+        <button onclick="Login()">Login</button>
+        <button onclick="Register()">Register</button>
+        <button onclick="Edit()">Transcribe song</button>
+    </div>
+    <br>
+    <h2>Search Songs</h2>
+    <div class="flex">
+        <input type="text" placeholder="search" id="search">
+        <button onclick="Search()">Search</button>
+    </div>
+    <h3>Results</h3>
+    <div class="list" id="results">
+
+    </div>
+    <script src="script.js"></script>
+    <script>
+        const search = document.getElementById("search");
+        const results = document.getElementById("results");
+        function Login() {
+            window.location.href = "login";
+        }
+        function Register() {
+            window.location.href = "register";
+        }
+
+        function Edit() {
+            window.location.href = "edit";
+        }
+        function Search() {
+            jfetch("/api/v1/search/" + search.value).then(res => {
+                var result = ``
+                res.forEach(song => {
+                    result += `<div class="result leftRightSplit" onclick="window.location.href = 'song?id=${song.songId}'">
+                        <div>
+                            <h3 class="songName">${song.name}</h3>
+                            <h4 class="artist">${song.artist}</h4>
+                            <h4 class="artist">transcribed by ${song.uploaderName}</h4>
+                        </div>
+                        <div class="resultChords">${GetChords(song.text)}</div>
+                    </div>`
+                })
+                if(!result) result = `<h1 class="result">No results</h1>`
+                results.innerHTML = result;
+            })
+        }
+
+        function GetChords(text) {
+            var chordRegex = /\[([^\]]+)\]/g
+            var chords = text.match(chordRegex);
+            chords = chords.filter(function(item, pos) {
+                return chords.indexOf(item) == pos;
+            })
+            var text = ""
+            if(chords) {
+                chords.forEach(function(chord) {
+                    text += chord.substring(1, chord.length-1) + " ";
+                });
+            }
+            return text;
+        }
+    </script>
+</body>
+</html>
