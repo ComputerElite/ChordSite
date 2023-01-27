@@ -86,8 +86,7 @@
 
     function transcribeChords() {
         console.log("transcribing chords")
-        var chords = song.text.match(/\[([^\]]+)\]/g);
-        var chordRegex = /\[([^\]]+)\]/;
+        var chords = song.text.match(chordRegex);
         var text = song.text;
 
         name.value = song.name;
@@ -97,7 +96,7 @@
         text = text.replace(/ /g, "&nbsp;")
         if(chords) {
             chords.forEach(function(chord) {
-                text = text.replace(chord, "<span class='chord'>"+chord.match(chordRegex)[1]+"</span>");
+                text = text.replace(chord, "<span class='chord'>"+chord.substring(1, chord.length - 1)+"</span>");
             });
         }
         text = text.replace(/\n/g, "<br>")

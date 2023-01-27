@@ -1,3 +1,29 @@
+const chordRegex = /\[([^\]]+)\]/g;
+
+function GetChords(text) {
+    var chords = text.match(chordRegex);
+    if(!chords) return ""
+    chords = chords.filter(function(item, pos) {
+        return chords.indexOf(item) == pos;
+    })
+    var text = ""
+    if(chords) {
+        chords.forEach(function(chord) {
+            text += chord.substring(1, chord.length-1) + " ";
+        });
+    }
+    return text;
+}
+
+function scrollToSection(sectionId) {
+    var section = document.getElementById(sectionId)
+    section.scrollIntoView()
+}
+
+function onlyUnique(value, index, self) {
+    return self.indexOf(value) === index;
+}
+
 
 function TextBoxError(id, text) {
     ChangeTextBoxProperty(id, "#EE0000", text)

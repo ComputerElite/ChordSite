@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Piano Chord Finder</title>
+  <link rel="stylesheet" type="text/css" href="style.css">
+</head>
+<body>
+    <button style="display: none;" id="edit" onclick="Edit()">Edit</button>
+    <h1 class="setName" id="name">Loading...</h1>
+    <h2 class="artist" id="description">Loading...</h2>
+    <div class="song" id="set">
+        Loading...
+    </div>
+    <script src="script.js"></script>
+  <script>
+    var set = {
+        "name": "No set specified",
+        "description": "Try another set",
+        "songs": []
+    }
+    const setContainer = document.getElementById("set")
+    const name = document.getElementById("name")
+    const description = document.getElementById("description")
+    const editButton = document.getElementById("edit")
+    
+    var params = new URLSearchParams(window.location.search);
+
+    if(params.get("id")) {
+        fetchSet(params.get("id"))
+    } else {
+        showSongs()
+    }
+
+    function fetchSet(id) {
+        jfetch("/api/v1/set/"+id).then(res =>  {
+            set = res;
+            showSongs();
+        })
+    }
+
+    function Edit() {
+        window.location.href = "editset?id="+set.setId
+    }
+
+    function showSongs() {
+        name.innerHTML = set.name
+        description.innerHTML = set.description
+        var result = ``
+        editButton.style.display = set.isOwn ? "block" : "none"
+        set.songs.forEach(song => {
+            result += `<div class="result leftRightSplit" onclick="window.location.href = 'song?id=${song.songId}'">
+                <div>
+                    <h3 class="songName">${song.name}</h3>
+                    <h4 class="artist">${song.artist}</h4>
+                    <h4 class="artist">transcribed by ${song.uploaderName}</h4>
+                </div>
+                <div class="resultChords">${GetChords(song.text)}</div>
+            </div>`
+        })
+        if(!result) result = `<h1 class="result">No songs in set</h1>`
+        setContainer.innerHTML = result;
+    }
+  </script>
+</body>
+</html>

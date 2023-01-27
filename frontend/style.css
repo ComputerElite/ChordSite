@@ -38,6 +38,8 @@ button {
 
 .section {
     font-size: 1.1rem;
+    font-weight: bold;
+    text-decoration: underline;
 }
 
 .sectionButton {
@@ -68,8 +70,8 @@ button {
 }
 
 .result {
+    line-height: 1 !important;
     padding: 10px;
-    width: 100%;
     border: none;
     background-color: #151515;
     color: #EEEEEE;
@@ -98,13 +100,16 @@ body {
 }
 .chord {
     position: absolute;
-    transform: translateY(-20px);
+    transform: translateY(-25px);
     font-weight: bold;
+    color: var(--chords);
+    font-size: 1.2rem;
 }
 
 .chords {
     display: flex;
     flex-wrap: wrap;
+    flex-shrink: 2;
 }
 
 .songName {
@@ -131,10 +136,12 @@ body {
     --black: #000000;
     --accent: #28142b;
     --accentLight: #422047;
+    --chords: #cdf158;
 }
 
 .leftRightSplit {
     display: flex;
+    flex-wrap: wrap;
     flex-direction: row;
     justify-content: space-between;
 }

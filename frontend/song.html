@@ -32,7 +32,6 @@
     const artist = document.getElementById("artist")
     const editButton = document.getElementById("edit")
     const sectionButtonContainer = document.getElementById("sectionButtons")
-    const chordRegex = /\[([^\]]+)\]/g;
     const sectionRegex = /\{[^\}]+\}/g
 
     
@@ -70,30 +69,22 @@
       name.innerHTML = song.name
       artist.innerHTML = "by " + song.artist
       editButton.style.display = song.isOwn ? "block" : "none"
-
       text = text.replace(/ /g, "&nbsp;")
+
       chords.forEach(function(chord) {
         var chordName = chord.substring(1, chord.length - 1)
         text = text.replace(chord, `<span class='chord'>${chordName}</span>`);
       });
+
       sections.forEach(section => {
         var sectionName = section.substring(1, section.length - 1)
-        text = text.replace(section, `<span class='section' id="${sectionName}">${sectionName}</span>`)
-        sectionsHTML += `<button onclick="scrollToSection('${sectionName}')" class="sectionButton">${sectionName}</button>`
+        text = text.replace(section.replace(/ /g, "&nbsp;"), `<span class='section' id="${sectionName.replace(/&nbsp;/g, "_")}">${sectionName}</span>`)
+        sectionsHTML += `<button onclick="scrollToSection('${sectionName.replace(/&nbsp;/g, "_")}')" class="sectionButton">${sectionName}</button>`
       })
       text = text.replace(/\n/g, "<br>")
       songContainer.innerHTML = text;
       sectionButtonContainer.innerHTML = sectionsHTML
       displayChords()
-    }
-
-    function scrollToSection(sectionId) {
-        var section = document.getElementById(sectionId)
-        section.scrollIntoView()
-    }
-
-    function onlyUnique(value, index, self) {
-        return self.indexOf(value) === index;
     }
 
     function displayChords() {

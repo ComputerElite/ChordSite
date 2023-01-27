@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Piano Chord Finder</title>
+  <link rel="stylesheet" type="text/css" href="style.css">
+</head>
+<body>
+    <label>Set Name<input type="text" id="name" placeholder="Set Name"></label>
+    <br>
+    <label>Description<input type="text" id="description" placeholder="Description"></label>
+    <br>
+    <br>
+    <button onclick="save()">Save</button>
+    <div class="song" id="set">
+        Loading...
+    </div>
+
+
+    <h2>Add Songs</h2>
+    <div class="flex">
+        <input type="text" placeholder="search" id="search">
+        <button onclick="SearchSongs()">Search</button>
+    </div>
+    <h3>Found songs</h3>
+    <div class="list" id="songresults">
+
+    </div>
+
+
+    <button onclick="deleteSet()">Delete</button>
+    <script src="script.js"></script>
+  <script>
+    const search = document.getElementById("search");
+    const songresults = document.getElementById("songresults");
+    const results = document.getElementById("songresults")
+
+    var set = {
+        "name": "No set specified",
+        "description": "Try another set",
+        "songs": [],
+        "songIds": []
+    }
+    var fetchedSongs = []
+    const setContainer = document.getElementById("set")
+    const name = document.getElementById("name")
+    const description = document.getElementById("description")
+    const editButton = document.getElementById("edit")
+    
+    var params = new URLSearchParams(window.location.search);
+
+    if(params.get("id")) {
+        fetchSet(params.get("id"))
+    } else {
+        showSongs()
+    }
+
+    name.onkeyup = () => {
+        set.name = name.value
+        showSongs()
+    }
+
+    description.onkeyup = () => {
+        set.description = description.value
+        showSongs()
+    }
+
+    function SearchSongs() {
+            jfetch("/api/v1/searchsongs/" + search.value).then(res => {
+                var result = ``
+                fetchedSongs = res
+                res.forEach(song => {
+                    result += `<div class="result leftRightSplit">
+                        <div>
+                            <h3 class="songName">${song.name}</h3>
+                            <h4 class="artist">${song.artist}</h4>
+                            <h4 class="artist">transcribed by ${song.uploaderName}</h4>
+                            <button onclick="addSong('${song.songId}')">Add Song</button>
+                        </div>
+                        <div class="resultChords">${GetChords(song.text)}</div>
+                    </div>`
+                })
+                if(!result) result = `<h1 class="result">No results</h1>`
+                results.innerHTML = result;
+            })
+        }
+
+    function deleteSet() {
+        tfetch("/api/v1/deleteset", "DELETE", JSON.stringify(set)).then(res => {
+            window.open("/", "_self")
+        }).catch(err => {
+            alert(err)
+        })
+    }
+
+    function addSong(id) {
+        set.songs.push(fetchedSongs.find(x => x.songId == id))
+        set.songIds.push(id)
+        showSongs()
+    }
+
+    function removeSong(id) {
+        set.songs = set.songs.filter(x => x.songId != id)
+        set.songIds = set.songIds.filter(x => x != id)
+        showSongs()
+    }
+
+    function save() {
+        tfetch("/api/v1/updateset", "POST", JSON.stringify(set)).then(res => {
+            window.open("/set?id="+res, "_self")
+        }).catch(err => {
+            alert(err)
+        })
+    }
+
+    function fetchSet(id) {
+        jfetch("/api/v1/set/"+id).then(res =>  {
+            set = res;
+            showSongs();
+        })
+    }
+
+    function Edit() {
+        window.location.href = "editset?id="+set.setId
+    }
+
+    function showSongs() {
+        name.value = set.name;
+        description.value = set.description;
+
+        var result = ``
+        set.songs.forEach(song => {
+            result += `<div class="result leftRightSplit">
+                <div>
+                    <h3 class="songName">${song.name}</h3>
+                    <h4 class="artist">${song.artist}</h4>
+                    <h4 class="artist">transcribed by ${song.uploaderName}</h4>
+                    <button onclick="removeSong('${song.songId}')">Remove Song</button>
+                </div>
+                <div class="resultChords">${GetChords(song.text)}</div>
+            </div>`
+        })
+        if(!result) result = `<h1 class="result">No songs in set</h1>`
+        setContainer.innerHTML = result;
+    }
+  </script>
+</body>
+</html>

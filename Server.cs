@@ -75,13 +75,37 @@ namespace ChordSite
 			UserSystem.Initialize();
 			server.DefaultCacheValidityInSeconds = 0;
 
+			// Sets
+			server.AddRoute("GET", "/api/v1/set/", new Func<ServerRequest, bool>(request =>
+			{
+				request.SendString(JsonSerializer.Serialize(MongoDBInteractor.GetSongSet(request.pathDiff, GetToken(request))));
+				return true;
+			}), true);
+			server.AddRoute("GET", "/api/v1/searchsets/", new Func<ServerRequest, bool>(request =>
+			{
+				request.SendString(JsonSerializer.Serialize(MongoDBInteractor.SearchSets(request.pathDiff, GetToken(request))));
+				return true;
+			}), true);
+			server.AddRoute("POST", "/api/v1/updateset", new Func<ServerRequest, bool>(request =>
+			{
+				SongSet s = JsonSerializer.Deserialize<SongSet>(request.bodyString);
+				HandleGenericResponse(request, MongoDBInteractor.UpdateSet(s, GetToken(request)));
+				return true;
+			}));
+			server.AddRoute("DELETE", "/api/v1/deleteset", new Func<ServerRequest, bool>(request =>
+			{
+				SongSet s = JsonSerializer.Deserialize<SongSet>(request.bodyString);
+				HandleGenericResponse(request, MongoDBInteractor.DeleteSet(s, GetToken(request)));
+				return true;
+			}));
+
 			// Songs
 			server.AddRoute("GET", "/api/v1/song/", new Func<ServerRequest, bool>(request =>
 			{
 				request.SendString(JsonSerializer.Serialize(MongoDBInteractor.GetSong(request.pathDiff, GetToken(request))));
 				return true;
 			}), true);
-			server.AddRoute("GET", "/api/v1/search/", new Func<ServerRequest, bool>(request =>
+			server.AddRoute("GET", "/api/v1/searchsongs/", new Func<ServerRequest, bool>(request =>
 			{
 				request.SendString(JsonSerializer.Serialize(MongoDBInteractor.SearchSongs(request.pathDiff, GetToken(request))));
 				return true;
@@ -139,7 +163,9 @@ namespace ChordSite
 
 			server.AddRouteFile("/chord", frontend + "chord.html", replace, true, true, true, 0);
 			server.AddRouteFile("/song", frontend + "song.html", replace, true, true, true, 0);
+			server.AddRouteFile("/set", frontend + "set.html", replace, true, true, true, 0);
 			server.AddRouteFile("/edit", frontend + "edit.html", replace, true, true, true, 0);
+			server.AddRouteFile("/editset", frontend + "editset.html", replace, true, true, true, 0);
 			server.AddRouteFile("/", frontend + "index.html", replace, true, true, true, 0);
 			server.AddRouteFile("/style.css", frontend + "style.css", replace, true, true, true, 0);
 			server.AddRouteFile("/script.js", frontend + "script.js", replace, true, true, true, 0);
