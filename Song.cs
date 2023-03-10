@@ -16,6 +16,7 @@ namespace ChordSite
 		public string name { get; set; } = "";
 		public string artist { get; set; } = "";
 		public string text { get; set; } = "";
+		public string youtubeLink { get; set; } = "";
 		public string uploaderID { get; set; } = "";
 		public string uploaderName { get; set; } = "";
 		[BsonIgnore]

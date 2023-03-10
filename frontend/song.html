@@ -8,6 +8,7 @@
     <button style="display: none;" id="edit" onclick="Edit()">Edit</button>
     <h1 class="songName" id="name">Loading...</h1>
     <h2 class="artist" id="artist">Loading...</h2>
+    <a id="youtubeLink"></a>
     <div class="leftRightSplit">
         <div class="song" id="song">
             Loading...
@@ -32,6 +33,7 @@
     const artist = document.getElementById("artist")
     const editButton = document.getElementById("edit")
     const sectionButtonContainer = document.getElementById("sectionButtons")
+    const youtubeLink = document.getElementById("youtubeLink")
     const sectionRegex = /\{[^\}]+\}/g
 
     
@@ -67,6 +69,8 @@
       var sectionsHTML = ""
 
       name.innerHTML = song.name
+      youtubeLink.href = song.youtubeLink
+      youtubeLink.innerHTML = "Youtube Link"
       artist.innerHTML = "by " + song.artist
       editButton.style.display = song.isOwn ? "block" : "none"
       text = text.replace(/ /g, "&nbsp;")

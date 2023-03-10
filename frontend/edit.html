@@ -9,6 +9,8 @@
     <br>
     <label>Artist<input type="text" id="artist" placeholder="Artist name"></label>
     <br>
+    <label>Youtube link<input type="text" id="youtube" placeholder="Youtube link"></label>
+    <br>
     <br>
     <button onclick="save()">Save</button>
     <div class="flexInline">
@@ -31,6 +33,7 @@
     const textContainer = document.getElementById("text")
     const name = document.getElementById("name")
     const artist = document.getElementById("artist")
+    const youtube = document.getElementById("youtube")
 
     textContainer.onkeyup = () => {
         song.text = textContainer.value;
@@ -45,6 +48,11 @@
     artist.onkeyup = () => {
         song.artist = artist.value;
         transcribeChords();
+    }
+    
+    youtube.onkeyup = () => {
+         song.youtubeLink = youtube.value;
+         transcribeChords()
     }
 
     
@@ -90,6 +98,7 @@
         var text = song.text;
 
         name.value = song.name;
+        youtube.value = song.youtubeLink;
         artist.value = song.artist;
         textContainer.value = song.text;
 
